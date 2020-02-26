@@ -53,8 +53,11 @@ class SearchProblem:
         util.raiseNotDefined()
 
     def getCostOfActions(self, actions):
+
+    
+
         """
-         actions: A list of actions to take
+         actions: A list of actions to take 
 
         This method returns the total cost of a particular sequence of actions.
         The sequence must be composed of legal moves.
@@ -84,9 +87,6 @@ def depthFirstSearch(problem):
 
     """
     "*** YOUR CODE HERE ***"
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     start = problem.getStartState();
     c = problem.getStartState()
     exploredState = []
@@ -98,24 +98,23 @@ def depthFirstSearch(problem):
     while len(states) > 0 :
         if( not bool(problem.isGoalState(c))):
             state, actions = states.pop()
-            print("state ", state)
+            # print("state ", state)
             exploredState.append(state)
             successor = problem.getSuccessors(state)
             count= count + 1;
-            print("successor ", successor)
+            # print("successor ", successor)
             for i in successor:
                 coordinates = i[0]
                 if not coordinates in exploredState:
                     c = i[0]
                     direction = i[1]
-                    print("direction ", direction)
+                    # print("direction ", direction)
                     states.append((coordinates, actions + [direction]))
                     if (bool(problem.isGoalState(c))):
                         return actions + [direction]
     
-    print("actions ",actions)
-    print(actions + [direction])
-    
+    # print("actions ",actions)
+    # print(actions + [direction]
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
@@ -147,6 +146,29 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+
+    start = problem.getStartState()
+    VisitedState = []
+    priorityQue = util.PriorityQueue()
+    node = (start, [])
+    priorityQue.push(node,0)
+
+    while priorityQue:
+        state, path = priorityQue.pop()
+
+        if(not state in VisitedState):
+            VisitedState.append(state)
+
+            if problem.isGoalState(state):
+                return path
+            else :
+                neighbour = problem.getSuccessors(state)
+                for i in neighbour:
+                    position = i[0]
+                    direction = i[1]
+                    newCost = path + [direction]
+                    priorityQue.push((position, path+[direction]), problem.getCostOfActions(newCost))
+    
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
