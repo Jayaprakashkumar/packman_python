@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -18,6 +18,7 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
+
 
 class SearchProblem:
     """
@@ -70,7 +71,8 @@ def tinyMazeSearch(problem):
     from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
-    return  [s, s, w, s, w, w, s, w]
+    return [s, s, w, s, w, w, s, w]
+
 
 def depthFirstSearch(problem):
     """
@@ -81,42 +83,40 @@ def depthFirstSearch(problem):
 
     To get started, you might want to try some of these simple commands to
     understand the search problem that is being passed in:
-
-    """
-    "*** YOUR CODE HERE ***"
     print("Start:", problem.getStartState())
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-    start = problem.getStartState();
-    c = problem.getStartState()
-    exploredState = []
+    """
+    "*** YOUR CODE HERE ***"
+
+    startNode_copy = problem.getStartState()
+    startNode = problem.getStartState()
+    visited_state = []
     # exploredState.append(start)
     states = []
-    stateTuple = (start, [])
+    stateTuple = (startNode, [])
     states.append(stateTuple)
-    count = 0;
-    while len(states) > 0 :
-        if( not bool(problem.isGoalState(c))):
+    count = 0
+    while len(states) > 0:
+        if(not bool(problem.isGoalState(startNode_copy))):
             state, actions = states.pop()
-            print("state ", state)
-            exploredState.append(state)
+            visited_state.append(state)
             successor = problem.getSuccessors(state)
-            count= count + 1;
-            print("successor ", successor)
+            count = count + 1
             for i in successor:
                 coordinates = i[0]
-                if not coordinates in exploredState:
-                    c = i[0]
+                if not coordinates in visited_state:
+                    startNode_copy = i[0]
                     direction = i[1]
                     print("direction ", direction)
                     states.append((coordinates, actions + [direction]))
-                    if (bool(problem.isGoalState(c))):
+                    if (bool(problem.isGoalState(startNode_copy))):
                         return actions + [direction]
 
-    print("actions ",actions)
-    print(actions + [direction])
-
+    # print("actions ", actions)
+    # print(actions + [direction])
     util.raiseNotDefined()
+
 
 def breadthFirstSearch(problem):
 
@@ -128,7 +128,7 @@ def breadthFirstSearch(problem):
     que = util.Queue()
     node = (start, [])
     que.push(node)
-    print("start state is :",start)
+    print("start state is :", start)
 
     while que:
         state, path = que.pop()
@@ -138,7 +138,7 @@ def breadthFirstSearch(problem):
 
             if problem.isGoalState(state):
                 return path
-            else :
+            else:
                 neighbour = problem.getSuccessors(state)
                 for i in neighbour:
                     position = i[0]
@@ -147,13 +147,14 @@ def breadthFirstSearch(problem):
     return []
     util.raiseNotDefined()
 
+
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
     start = problem.getStartState()
     exploredState = []
     states = util.PriorityQueue()
-    states.push((start, []) ,0)
+    states.push((start, []), 0)
     while not states.isEmpty():
         state, actions = states.pop()
         if problem.isGoalState(state):
@@ -165,11 +166,11 @@ def uniformCostSearch(problem):
                 if coordinates not in exploredState:
                     directions = succ[1]
                     newCost = actions + [directions]
-                    states.push((coordinates, actions + [directions]), problem.getCostOfActions(newCost))
+                    states.push(
+                        (coordinates, actions + [directions]), problem.getCostOfActions(newCost))
         exploredState.append(state)
     return actions
     util.raiseNotDefined()
-
 
 
 def nullHeuristic(state, problem=None):
@@ -179,6 +180,7 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
+
 def aStarSearch(problem, heuristic=nullHeuristic):
     "Search the node that has the lowest combined cost and heuristic first."
     start = problem.getStartState()
@@ -186,8 +188,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     que = util.PriorityQueue()
     node = (start, [])
     cost = 0
-    que.push(node,nullHeuristic(start, problem))
-
+    que.push(node, nullHeuristic(start, problem))
 
     while que:
         state, path = que.pop()
@@ -197,13 +198,14 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
             if problem.isGoalState(state):
                 return path
-            else :
+            else:
                 neighbour = problem.getSuccessors(state)
                 for i in neighbour:
                     position = i[0]
                     direction = i[1]
-                    cost = problem.getCostOfActions(path+[direction]) + heuristic(position, problem)
-                    que.push((position, path+[direction]),cost)
+                    cost = problem.getCostOfActions(
+                        path+[direction]) + heuristic(position, problem)
+                    que.push((position, path+[direction]), cost)
     return []
     util.raiseNotDefined()
 
