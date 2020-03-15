@@ -53,11 +53,8 @@ class SearchProblem:
         util.raiseNotDefined()
 
     def getCostOfActions(self, actions):
-
-    
-
         """
-         actions: A list of actions to take 
+         actions: A list of actions to take
 
         This method returns the total cost of a particular sequence of actions.
         The sequence must be composed of legal moves.
@@ -87,6 +84,9 @@ def depthFirstSearch(problem):
 
     """
     "*** YOUR CODE HERE ***"
+    print("Start:", problem.getStartState())
+    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     start = problem.getStartState();
     c = problem.getStartState()
     exploredState = []
@@ -98,33 +98,37 @@ def depthFirstSearch(problem):
     while len(states) > 0 :
         if( not bool(problem.isGoalState(c))):
             state, actions = states.pop()
-            # print("state ", state)
+            print("state ", state)
             exploredState.append(state)
             successor = problem.getSuccessors(state)
             count= count + 1;
-            # print("successor ", successor)
+            print("successor ", successor)
             for i in successor:
                 coordinates = i[0]
                 if not coordinates in exploredState:
                     c = i[0]
                     direction = i[1]
-                    # print("direction ", direction)
+                    print("direction ", direction)
                     states.append((coordinates, actions + [direction]))
                     if (bool(problem.isGoalState(c))):
                         return actions + [direction]
-    
-    # print("actions ",actions)
-    # print(actions + [direction]
+
+    print("actions ",actions)
+    print(actions + [direction])
+
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
 
+    print("Inside Bfs")
     start = problem.getStartState()
+
+    #start = (4,5)
     VisitedState = []
     que = util.Queue()
     node = (start, [])
     que.push(node)
-
+    print("start state is :",start)
 
     while que:
         state, path = que.pop()
@@ -144,32 +148,29 @@ def breadthFirstSearch(problem):
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
-    """Search the node of least total cost first."""
+    "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
-
     start = problem.getStartState()
-    VisitedState = []
-    priorityQue = util.PriorityQueue()
-    node = (start, [])
-    priorityQue.push(node,0)
-
-    while priorityQue:
-        state, path = priorityQue.pop()
-
-        if(not state in VisitedState):
-            VisitedState.append(state)
-
-            if problem.isGoalState(state):
-                return path
-            else :
-                neighbour = problem.getSuccessors(state)
-                for i in neighbour:
-                    position = i[0]
-                    direction = i[1]
-                    newCost = path + [direction]
-                    priorityQue.push((position, path+[direction]), problem.getCostOfActions(newCost))
-    
+    exploredState = []
+    states = util.PriorityQueue()
+    states.push((start, []) ,0)
+    while not states.isEmpty():
+        state, actions = states.pop()
+        if problem.isGoalState(state):
+            return actions
+        if state not in exploredState:
+            successors = problem.getSuccessors(state)
+            for succ in successors:
+                coordinates = succ[0]
+                if coordinates not in exploredState:
+                    directions = succ[1]
+                    newCost = actions + [directions]
+                    states.push((coordinates, actions + [directions]), problem.getCostOfActions(newCost))
+        exploredState.append(state)
+    return actions
     util.raiseNotDefined()
+
+
 
 def nullHeuristic(state, problem=None):
     """
