@@ -483,9 +483,46 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access
     problem.heuristicInfo['wallCount']
     """
+    
+    """
+    List : [(1, 1), (2, 1), (3, 1), (4, 1), (4, 4), (5, 1), (7, 4), (10, 4), (13, 4), (14, 5)]
+    position : (13, 5)
+    """
     position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+    foodlist = foodGrid.asList()
+    if not foodlist:
+        return 0
+    lowFoodList = foodlist[0]
+    if len(foodlist) == 1:
+        return abs(position[0] - lowFoodList[0]) + abs(position[1] - lowFoodList[1])
+    cost = 0
+    lowcostArr = []
+    highCostArr = []
+    highFoodList = foodlist[0]
+    lowCost = 0
+    for point in foodlist:
+        cost = abs(position[0] - point[0]) + abs(position[1] - point[1])
+        lowcostArr.append(cost)
+        lowCost = min(lowcostArr)
+    minIndex = lowcostArr.index(lowCost)
+    lowFoodList = foodlist[minIndex]
+    #print("lowcost array " + str(lowcostArr))
+    #print("lowCost " +str(lowCost))
+    #print(lowFoodList)
+    for point in foodlist:
+        cost = abs(lowFoodList[0] - point[0]) + abs(lowFoodList[1] - point[1])
+        highCostArr.append(cost)
+        highCost = max(highCostArr)
+    maxIndex = highCostArr.index(highCost)
+    highFoodList = foodlist[maxIndex]
+    #print("position" + str(position))
+    #print("lowCost" +str(highCost))
+    #print("lowcost array" + str(highCostArr))
+    
+    #return abs(position[0] - lowFoodList[0]) + abs(position[1] - lowFoodList[1])
+    #return abs(lowFoodList[0] - highFoodList[0]) + abs(lowFoodList[1] - highFoodList[1]) + abs(position[0] - lowFoodList[0]) + abs(position[1] - lowFoodList[1])
+    return abs(lowFoodList[0] - highFoodList[0]) + abs(lowFoodList[1] - highFoodList[1]) + abs(position[0] - lowFoodList[0]) + abs(position[1] - lowFoodList[1])
+ 
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
