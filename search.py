@@ -88,34 +88,51 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
+    start = problem.getStartState()
+    c = problem.getStartState()
+    exploredState = []
+    exploredState.append(start)
+    states = util.Stack()
+    stateTuple = (start, [])
+    states.push(stateTuple)
+    while not states.isEmpty() and not problem.isGoalState(c):
+        state, actions = states.pop()
+        exploredState.append(state)
+        successor = problem.getSuccessors(state)
+        for i in successor:
+            coordinates = i[0]
+            if not coordinates in exploredState:
+                c = i[0]
+                direction = i[1]
+                states.push((coordinates, actions + [direction]))
+    return actions + [direction]
+    # startNode_copy = problem.getStartState()
+    # startNode = problem.getStartState()
+    # visited_state = []
+    # # exploredState.append(start)
+    # states = []
+    # stateTuple = (startNode, [])
+    # states.append(stateTuple)
+    # count = 0
+    # while len(states) > 0:
+    #     if(not bool(problem.isGoalState(startNode_copy))):
+    #         state, actions = states.pop()
+    #         visited_state.append(state)
+    #         successor = problem.getSuccessors(state)
+    #         count = count + 1
+    #         for i in successor:
+    #             coordinates = i[0]
+    #             if not coordinates in visited_state:
+    #                 startNode_copy = i[0]
+    #                 direction = i[1]
+    #                 # print("direction ", direction)
+    #                 states.append((coordinates, actions + [direction]))
+    #                 if (bool(problem.isGoalState(startNode_copy))):
+    #                     return actions + [direction]
 
-    startNode_copy = problem.getStartState()
-    startNode = problem.getStartState()
-    visited_state = []
-    # exploredState.append(start)
-    states = []
-    stateTuple = (startNode, [])
-    states.append(stateTuple)
-    count = 0
-    while len(states) > 0:
-        if(not bool(problem.isGoalState(startNode_copy))):
-            state, actions = states.pop()
-            visited_state.append(state)
-            successor = problem.getSuccessors(state)
-            count = count + 1
-            for i in successor:
-                coordinates = i[0]
-                if not coordinates in visited_state:
-                    startNode_copy = i[0]
-                    direction = i[1]
-                    print("direction ", direction)
-                    states.append((coordinates, actions + [direction]))
-                    if (bool(problem.isGoalState(startNode_copy))):
-                        return actions + [direction]
-
-    # print("actions ", actions)
-    # print(actions + [direction])
-    util.raiseNotDefined()
+    # # print("actions ", actions)
+    # # print(actions + [direction])
+    # util.raiseNotDefined()
 
 
 def breadthFirstSearch(problem):
