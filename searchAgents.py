@@ -580,26 +580,15 @@ def foodHeuristic(state, problem):
     for point in foodlist:
         cost = abs(position[0] - point[0]) + abs(position[1] - point[1])
         lowcostArr.append(cost)
-        lowCost = min(lowcostArr)
-    minIndex = lowcostArr.index(lowCost)
-    lowFoodList = foodlist[minIndex]
-    #print("lowcost array " + str(lowcostArr))
-    #print("lowCost " +str(lowCost))
-    # print(lowFoodList)
-    for point in foodlist:
-        cost = abs(lowFoodList[0] - point[0]) + abs(lowFoodList[1] - point[1])
         highCostArr.append(cost)
+        lowCost = min(lowcostArr)
         highCost = max(highCostArr)
+    minIndex = lowcostArr.index(lowCost)
+    lowFoodList = foodlist[minIndex]  
     maxIndex = highCostArr.index(highCost)
     highFoodList = foodlist[maxIndex]
-    #print("position" + str(position))
-    #print("lowCost" +str(highCost))
-    #print("lowcost array" + str(highCostArr))
-
-    # return abs(position[0] - lowFoodList[0]) + abs(position[1] - lowFoodList[1])
-    # return abs(lowFoodList[0] - highFoodList[0]) + abs(lowFoodList[1] - highFoodList[1]) + abs(position[0] - lowFoodList[0]) + abs(position[1] - lowFoodList[1])
     return abs(lowFoodList[0] - highFoodList[0]) + abs(lowFoodList[1] - highFoodList[1]) + abs(position[0] - lowFoodList[0]) + abs(position[1] - lowFoodList[1])
-
+    
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
