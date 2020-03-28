@@ -403,6 +403,7 @@ class CornersProblem(search.SearchProblem):
         return len(actions)
 
 
+
 def cornersHeuristic(state, problem):
     """
     A heuristic for the CornersProblem that you defined.
