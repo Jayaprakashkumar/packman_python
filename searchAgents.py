@@ -406,58 +406,85 @@ class CornersProblem(search.SearchProblem):
 def cornersHeuristic(state, problem):
     """
     A heuristic for the CornersProblem that you defined.
-
       state:   The current search state
                (a data structure you chose in your search problem)
-
-      problem: The CornersProblem instance for this layout.
+    problem: The CornersProblem instance for this layout.
 
     This function should always return a number that is a lower bound on the
     shortest path from the state to a goal of the problem; i.e.  it should be
     admissible (as well as consistent).
+
+    corners = problem.corners # These are the corner coordinates
+    walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
+    unvisited = []        # Hold unvisited corners
+    visited = state[1]    # Visited corners
+    node = state[0]       # Current node
+    heuristic = 0         # Heuristic value
+
+    for corner in corners:
+        if not corner in visited:
+            unvisited.append(corner)
+
+    while unvisited:
+        distance, corner = min([(util.manhattanDistance(node, corner), corner) \
+                                for corner in unvisited])
+        heuristic += distance
+        node = corner
+        unvisited.remove(corner)
+
+    return heuristic
     """
-    corners = problem.corners  # These are the corner coordinates
-    # These are the walls of the maze, as a Grid (game.py)
-    walls = problem.walls
 
-    "*** YOUR CODE HERE ***"
-    position = state[0]
-    stateCorners = state[1]
-    corners = problem.corners
-    top, right = problem.walls.height-2, problem.walls.width-2
-    cornerNot = []
-    for c in corners:
-        if c == (1, 1):
-            if not stateCorners[3]:
-                cornerNot.append(c)
-        if c == (1, top):
-            if not stateCorners[2]:
-                cornerNot.append(c)
-        if c == (right, top):
-            if not stateCorners[1]:
-                cornerNot.append(c)
-        if c == (right, 1):
-            if not stateCorners[0]:
-                cornerNot.append(c)
+    corners = problem.corners # These are the corner coordinates
+    #print("corners ",corners)
+    walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
+    #print("walls ",walls)
 
-    cost = 0
-    currPosition = position
-    while len(cornerNot) > 0:
-        distArr = []
-        x = 0
-        for c in range(0, len(cornerNot)):
-            corner = cornerNot[c]
-            x = x + 1
-            dist = util.manhattanDistance(currPosition, corner)
-            distArr.append(dist)
-        minDist = min(distArr)
-        cost += minDist
-        minDistI = distArr.index(minDist)
-        currPosition = cornerNot[minDistI]
-        del cornerNot[minDistI]
 
-    return cost
-    # return 0 # Default to trivial solution
+    height = problem.walls.height-2
+    width =   problem.walls.width-2
+
+    cornerStates = state[1]
+    otherNodes = []
+
+    #print("state is  ",state)
+    for node in corners:
+        if node == (1,1):
+            if not cornerStates[3]:
+                otherNodes.append(node)
+        if node == (width, 1):
+            if not cornerStates[0]:
+                otherNodes.append(node)
+        if node == (1, height):
+            if not cornerStates[2]:
+                otherNodes.append(node)
+        if node == (width, height):
+            if not cornerStates[1]:
+                otherNodes.append(node)
+
+
+    #print("other nodes is ",otherNodes)
+    weight = 0
+    current = state[0]
+
+    while otherNodes :
+        distances = []
+        for n in range(0,len(otherNodes)):
+            corner = otherNodes[n]
+            dist = util.manhattanDistance(current, corner)
+            distances.append(dist)
+        minDManHanDistance = min(distances)
+        weight = minDManHanDistance + weight
+        index = distances.index(minDManHanDistance)
+        current = otherNodes[index]
+        del otherNodes[index]
+
+    return weight
+
+
+
+
+
 
 
 class AStarCornersAgent(SearchAgent):
