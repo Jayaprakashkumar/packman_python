@@ -322,8 +322,8 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        allCorners = (False, False, False, False)
-        start = (self.startingPosition, allCorners)
+        # Initialise the start state and four corners 
+        start = (self.startingPosition, (False, False, False, False))
         return start
         util.raiseNotDefined()
 
@@ -333,8 +333,12 @@ class CornersProblem(search.SearchProblem):
         """
         "*** YOUR CODE HERE ***"
         corners = state[1]
-        boolean = corners[0] and corners[1] and corners[2] and corners[3]
-        return boolean
+        allCornersReached = True
+        for each_corner in corners:
+            if not each_corner:
+                allCornersReached = False
+        
+        return allCornersReached
         util.raiseNotDefined()
 
     def getSuccessors(self, state):
@@ -359,32 +363,36 @@ class CornersProblem(search.SearchProblem):
 
             "*** YOUR CODE HERE ***"
             x, y = state[0]
-            holdCorners = state[1]
+            cornerState = state[1]
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
-            hitsWall = self.walls[nextx][nexty]
             newCorners = ()
             nextState = (nextx, nexty)
-            if not hitsWall:
+            # print("nextState: ",nextState)
+            # print("self corners: ",self.corners)
+            # print("cornerState: ", cornerState)
+            if not self.walls[nextx][nexty]:
                 if nextState in self.corners:
-                    if nextState == (self.right, 1):
-                        newCorners = [True, holdCorners[1],
-                                      holdCorners[2], holdCorners[3]]
-                    elif nextState == (self.right, self.top):
-                        newCorners = [holdCorners[0], True,
-                                      holdCorners[2], holdCorners[3]]
+                    if nextState == (1, 1):
+                        newCorners = [cornerState[0],
+                                      cornerState[1], cornerState[2], True]
                     elif nextState == (1, self.top):
-                        newCorners = [holdCorners[0],
-                                      holdCorners[1], True, holdCorners[3]]
-                    elif nextState == (1, 1):
-                        newCorners = [holdCorners[0],
-                                      holdCorners[1], holdCorners[2], True]
+                        newCorners = [cornerState[0],
+                                      cornerState[1], True, cornerState[3]]                  
+                    elif nextState == (self.right, 1):
+                        newCorners = [True, cornerState[1],
+                                      cornerState[2], cornerState[3]]
+                    elif nextState == (self.right, self.top):
+                        newCorners = [cornerState[0], True,
+                                      cornerState[2], cornerState[3]]
                     successor = ((nextState, newCorners), action,  1)
                 else:
-                    successor = ((nextState, holdCorners), action, 1)
+                    successor = ((nextState, cornerState), action, 1)
+                # print("successor: ", successor)    
                 successors.append(successor)
 
         self._expanded += 1  # DO NOT CHANGE
+        # print("Final successor", successors)
         return successors
 
     def getCostOfActions(self, actions):
