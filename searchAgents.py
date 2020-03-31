@@ -304,6 +304,8 @@ class CornersProblem(search.SearchProblem):
         """
         self.walls = startingGameState.getWalls()
         self.startingPosition = startingGameState.getPacmanPosition()
+        # print("startingGameState :", startingGameState)
+
         top, right = self.walls.height-2, self.walls.width-2
         self.corners = ((1, 1), (1, top), (right, 1), (right, top))
         for corner in self.corners:
@@ -362,6 +364,7 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+            # print("state: ",state)
             x, y = state[0]
             cornerState = state[1]
             dx, dy = Actions.directionToVector(action)
@@ -375,10 +378,10 @@ class CornersProblem(search.SearchProblem):
                 if nextState in self.corners:
                     if nextState == (1, 1):
                         newCorners = [cornerState[0],
-                                      cornerState[1], cornerState[2], True]
+                                      cornerState[1], True, cornerState[3]]
                     elif nextState == (1, self.top):
                         newCorners = [cornerState[0],
-                                      cornerState[1], True, cornerState[3]]                  
+                                      cornerState[1], cornerState[2], True]                  
                     elif nextState == (self.right, 1):
                         newCorners = [True, cornerState[1],
                                       cornerState[2], cornerState[3]]
@@ -459,13 +462,13 @@ def cornersHeuristic(state, problem):
     #print("state is  ",state)
     for node in corners:
         if node == (1,1):
-            if not cornerStates[3]:
+            if not cornerStates[2]:
                 otherNodes.append(node)
         if node == (width, 1):
             if not cornerStates[0]:
                 otherNodes.append(node)
         if node == (1, height):
-            if not cornerStates[2]:
+            if not cornerStates[3]:
                 otherNodes.append(node)
         if node == (width, height):
             if not cornerStates[1]:
@@ -489,11 +492,6 @@ def cornersHeuristic(state, problem):
         del otherNodes[index]
 
     return weight
-
-
-
-
-
 
 
 class AStarCornersAgent(SearchAgent):
