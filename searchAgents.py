@@ -481,10 +481,12 @@ def cornersHeuristic(state, problem):
 
     while otherNodes :
         distances = []
-        for n in range(0,len(otherNodes)):
-            corner = otherNodes[n]
+        counter = 0
+        while counter < len(otherNodes):
+            corner = otherNodes[counter]
             dist = util.manhattanDistance(current, corner)
             distances.append(dist)
+            counter = counter + 1
         minDManHanDistance = min(distances)
         weight = minDManHanDistance + weight
         index = distances.index(minDManHanDistance)
